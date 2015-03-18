@@ -3,8 +3,7 @@
 angular.module('notifications', []).
   factory('$notification', ['$timeout',function($timeout){
 
-    console.log('notification service online');
-    var notifications = JSON.parse(localStorage.getItem('$notifications')) || [],
+    var notifications =  [],
         queue = [];
 
     var settings = {
@@ -19,6 +18,10 @@ angular.module('notifications', []).
       html5Mode: false,
       html5DefaultIcon: 'icon.png'
     };
+
+    if(settings.localStorage){
+      notifications = JSON.parse(localStorage.getItem('$notifications'));
+    }
 
     function html5Notify(icon, title, content, ondisplay, onclose){
       if(window.webkitNotifications.checkPermission() === 0){
@@ -75,7 +78,6 @@ angular.module('notifications', []).
 
       requestHtml5ModePermissions: function(){
         if (window.webkitNotifications){
-          console.log('notifications are available');
           if (window.webkitNotifications.checkPermission() === 0) {
             return true;
           }
@@ -92,7 +94,6 @@ angular.module('notifications', []).
           }
         }
         else{
-          console.log('notifications are not supported');
           return false;
         }
       },
@@ -112,7 +113,6 @@ angular.module('notifications', []).
       /* ============== NOTIFICATION METHODS ==============*/
 
       info: function(title, content, userData){
-        console.log(title, content);
         return this.awesomeNotify('info','info', title, content, userData);
       },
 
@@ -160,11 +160,13 @@ angular.module('notifications', []).
         };
         notifications.push(notification);
 
+        
         if(settings.html5Mode){
           html5Notify(image, title, content, function(){
-            console.log("inner on display function");
+        	//inner on display function
+
           }, function(){
-            console.log("inner on close function");
+            //inner on close function"
           });
         }
         else{
